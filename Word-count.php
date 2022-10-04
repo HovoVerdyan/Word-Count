@@ -8,6 +8,7 @@ Author: Hovhannes Verdyan
  */
 
 require_once "HtmlFunctions.php";
+require_once "errorAndSecurityFunctions.php";
 
 class WordCountAndTimePlugin {
     function __construct() {
@@ -47,7 +48,7 @@ class WordCountAndTimePlugin {
         register_setting(
                 'wordcountplugin',
                 'wcp_location',
-                array('sanitize_callback' => 'sanitize_text_field',
+                array('sanitize_callback' => array('errorAndSecurityFunctions', 'sanitizeLocation'),
                 'default' => '0')
         );
 
