@@ -7,6 +7,7 @@ Version: 1.0
 Author: Hovhannes Verdyan
  */
 
+require_once "HtmlFunctions.php";
 
 class WordCountAndTimePlugin {
     function __construct() {
@@ -20,7 +21,7 @@ class WordCountAndTimePlugin {
             'Word Count',
             'manage_options',
             'word-count-settings-page',
-            array($this, 'ourHTML')
+            array('HtmlFunctions', 'ourHTML')
         );
     }
 
@@ -32,11 +33,13 @@ class WordCountAndTimePlugin {
                 'word-count-settings-page'
         );
 
-        //Choosing the location of the texts in the post
+        /*
+         * Choosing the location of the texts in the post
+         */
         add_settings_field(
                 'wcp_location',
                 'Display Location',
-                array($this, 'locationHTML'),
+                array('HtmlFunctions', 'locationHTML'),
                 'word-count-settings-page',
                 'wcp_first_section'
         );
@@ -48,11 +51,13 @@ class WordCountAndTimePlugin {
                 'default' => '0')
         );
 
-        //Chosing the headline
+        /*
+        * Choosing the headline
+        */
         add_settings_field(
-                'wcp_location',
-                'Headline Location',
-                array($this, 'headlineHTML'),
+                'wcp_headline',
+                'Headline Text',
+                array('HtmlFunctions', 'headlineHTML'),
                 'word-count-settings-page',
                 'wcp_first_section'
         );
@@ -64,33 +69,65 @@ class WordCountAndTimePlugin {
                 'default' => 'Post Statistics')
         );
 
+        /*
+        * Enable Word Counting
+        */
+        add_settings_field(
+                'wcp_wordcount',
+                'Word Count',
+                array('HtmlFunctions', 'checkboxFunctionsHtml'),
+                'word-count-settings-page',
+                'wcp_first_section',
+                array('checkBoxName' => 'wcp_wordcount')
+        );
+
+        register_setting(
+                'wordcountplugin',
+                'wcp_wordcount',
+                array('sanitize_callback' => 'sanitize_text_field',
+                'default' => '1')
+        );
+
+        /*
+        * Enable Character Count
+        */
+        add_settings_field(
+                'wcp_charactercount',
+                'Character Count',
+                array('HtmlFunctions', 'checkboxFunctionsHtml'),
+                'word-count-settings-page',
+                'wcp_first_section',
+                 array('checkBoxName' => 'wcp_charactercount')
+        );
+
+        register_setting(
+                'wordcountplugin',
+                'wcp_charactercount',
+                array('sanitize_callback' => 'sanitize_text_field',
+                'default' => '1')
+        );
+
+        /*
+        * Enable Read Time
+        */
+        add_settings_field(
+                'wcp_readcount',
+                'Read Count',
+                array('HtmlFunctions', 'checkboxFunctionsHtml'),
+                'word-count-settings-page',
+                'wcp_first_section',
+                array('checkBoxName' => 'wcp_readcount')
+        );
+
+        register_setting(
+                'wordcountplugin',
+                'wcp_readcount',
+                array('sanitize_callback' => 'sanitize_text_field',
+                'default' => '1')
+        );
+
     }
 
-    public function headlineHTML()
-    {
-
-    }
-
-    public function locationHTML() { ?>
-        <select name="wcp_location">
-            <option value="0" <?php selected(get_option('wcp_location'), '0') ?>>Beginning of post</option>
-            <option value="1" <?php selected(get_option('wcp_location'), '1') ?>>End of post</option>
-        </select>
-    <?php }
-
-
-    public function ourHTML() { ?>
-        <div class="wrap">
-            <h1>Word Count Settings</h1>
-            <form action="options.php" method="POST">
-                <?php
-                settings_fields('wordcountplugin');
-                do_settings_sections('word-count-settings-page');
-                submit_button();
-                ?>
-            </form>
-        </div>
-    <?php }
 }
 
 $wordCountAndTimePlugin = new WordCountAndTimePlugin();
